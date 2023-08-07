@@ -12,7 +12,7 @@ const cartRoute = require("./src/routes/cartRoute");
 connectDb();
 
 app.use(cors()); //CORS middleware
-app.use(express.json());
+app.use(bodyParse.json());
 app.use(bodyParse.urlencoded({ extended: true }));
 
 app.use("/api/user", userRoute);

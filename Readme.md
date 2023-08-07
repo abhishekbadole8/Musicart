@@ -19,13 +19,13 @@ Method Post : /add
 Method Get : /
 
 // Get Product
-Method Get : /:id
+Method Get : /:userid
 
 // Update Product
-Method Patch : /:id
+Method Patch : /:userid
 
 // Delete Product
-Method Delete : /:id
+Method Delete : /:userid
 
 # Cart Head Api : /api/cart
 

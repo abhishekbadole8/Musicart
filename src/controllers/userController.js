@@ -11,7 +11,7 @@ const createUser = async (req, res) => {
 
     // All Fields are mandatory
     if (!name || !email || !mobile || !password) {
-      res.status(400).json({ message: "All fields are mandatory" });
+      return res.status(400).json({ message: "All fields are mandatory" });
     }
 
     // Check User already Present or not
@@ -23,8 +23,9 @@ const createUser = async (req, res) => {
         return res.status(401).json({ message: `Email Already Present` });
       }
     }
+
     // Present With email
-    else if (mobile) {
+    if (mobile) {
       isUserValid = await User.findOne({ mobile });
       if (isUserValid) {
         return res
@@ -47,7 +48,7 @@ const createUser = async (req, res) => {
     });
 
     if (user) {
-      res.status(200).send(user);
+      res.status(200).json(user);
     }
   } catch (error) {
     res.status(404).send({ message: error.message });
@@ -62,11 +63,12 @@ const loginUser = async (req, res) => {
     const { email, mobile, password } = req.body;
 
     if (!(email || mobile) || !password) {
-      throw new Error("Invalid credentials provided.");
+      return res.status(401).json({ message: "Invalid Credentials provided." });
     }
 
     // Check user valid or not
     let user;
+    // Here user provided email
     if (email) {
       user = await User.findOne({ email }); // Here user provided email
     } else if (mobile) {
@@ -79,12 +81,12 @@ const loginUser = async (req, res) => {
         expiresIn: "1d",
       });
 
-      res.status(200).send({ token: token });
+      res.status(200).json({ token: token });
     } else {
       res.status(401).json({ message: "Invalid credentials provided." });
     }
   } catch (error) {
-    res.status(401).send({ message: "Authentication failed" });
+    res.status(401).json({ message: "Authentication failed" });
   }
 };
 

@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
 // const multer = require("multer");
 // const upload = multer();
@@ -88,9 +89,13 @@ const getProducts = async (req, res) => {
 // @access public route
 const getProduct = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { productId } = req.params;
 
-    const product = await Product.findById(id);
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const product = await Product.findById(productId);
 
     if (product) {
       res.status(200).json(product);
@@ -107,8 +112,13 @@ const getProduct = async (req, res) => {
 // @access public route
 const updateProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateProduct = await Product.findByIdAndUpdate(id, req.body, {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const updateProduct = await Product.findByIdAndUpdate(productId, req.body, {
       new: true,
     });
 
@@ -127,19 +137,22 @@ const updateProduct = async (req, res) => {
 // @access public route
 const deleteProduct = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { productId } = req.params;
 
-    const product = await Product.findById(id);
-
-    if (!product) {
-      res.send(404).json({ message: "Product not found" });
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(404).json({ message: "Product not found" });
     }
+
+    const product = await Product.findById(productId);
 
     if (product) {
-      await Product.findByIdAndDelete(id);
-      res.status(200).json({ message: ` Product with Id: ${id} deleted` });
+      await Product.findByIdAndDelete(productId);
+      return res.status(200).json({
+        message: ` Product with id: ${productId} is deleted Successfully`,
+      });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
