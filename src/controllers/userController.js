@@ -11,16 +11,29 @@ const createUser = async (req, res) => {
 
     // All Fields are mandatory
     if (!name || !email || !mobile || !password) {
-      throw new Error("All fields are Mandatory !!");
+      res.status(400).json({ message: "All fields are mandatory" });
     }
 
     // Check User already Present or not
-    const isUserValid = await User.findOne({ email });
+    let isUserValid;
+    // Present With email
+    if (email) {
+      isUserValid = await User.findOne({ email });
+      if (isUserValid) {
+        return res.status(401).json({ message: `Email Already Present` });
+      }
+    }
+    // Present With email
+    else if (mobile) {
+      isUserValid = await User.findOne({ mobile });
+      if (isUserValid) {
+        return res
+          .status(401)
+          .json({ message: `Mobile Number Already Present` });
+      }
+    }
 
     // If user already present
-    if (isUserValid) {
-      throw new Error("Email already present");
-    }
 
     // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -68,7 +81,7 @@ const loginUser = async (req, res) => {
 
       res.status(200).send({ token: token });
     } else {
-      throw new Error("Invalid credentials provided.");
+      res.status(401).json({ message: "Invalid credentials provided." });
     }
   } catch (error) {
     res.status(401).send({ message: "Authentication failed" });

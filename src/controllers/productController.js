@@ -1,4 +1,6 @@
 const Product = require("../models/productModel");
+// const multer = require("multer");
+// const upload = multer();
 
 // @desc Create Product
 // @route POST api/product/add
@@ -40,7 +42,10 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // create product in database
+    // Convert Uploaded images to Buffers
+    // const imageBuffers = req.files.map((file) => file.buffer);
+
+    // create product in database with images
     const product = await Product.create({
       title,
       name,
@@ -52,13 +57,14 @@ const createProduct = async (req, res) => {
       color,
       rating,
       description,
+      // images: imageBuffers,
     });
 
     if (product) {
       res.status(201).json(product);
     }
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -133,7 +139,6 @@ const deleteProduct = async (req, res) => {
       await Product.findByIdAndDelete(id);
       res.status(200).json({ message: ` Product with Id: ${id} deleted` });
     }
-    
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
