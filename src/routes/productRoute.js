@@ -9,10 +9,10 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-router.post("/add", authHandler, createProduct); // PRIVATE
+router.post("/add", authHandler, createProduct); // PRIVATE - admin
 router.get("/", getProducts); // PUBLIC
 router.get("/:productId", getProduct); // PUBLIC
-router.patch("/:productId", authHandler, updateProduct); // PRIVATE
-router.delete("/:productId", authHandler, deleteProduct); // PRIVATE
+router.patch("/update/:userId/:productId", authHandler, updateProduct); // PRIVATE 
+router.delete("/:productId", authHandler, deleteProduct); // PRIVATE - admin
 
 module.exports = router;

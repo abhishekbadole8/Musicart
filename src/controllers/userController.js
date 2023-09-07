@@ -34,8 +34,6 @@ const createUser = async (req, res) => {
       }
     }
 
-    // If user already present
-
     // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -51,7 +49,7 @@ const createUser = async (req, res) => {
       res.status(200).json(user);
     }
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
 };
 
@@ -61,7 +59,7 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, mobile, password } = req.body;
-
+    
     if (!(email || mobile) || !password) {
       return res.status(401).json({ message: "Invalid Credentials provided." });
     }

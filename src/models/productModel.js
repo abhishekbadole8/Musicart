@@ -14,7 +14,6 @@ const productSchema = mongoose.Schema(
       type: String,
       Required: true,
     },
-    // in-ear / over-ear / on-ear
     model_type: {
       type: String,
       Required: true,
@@ -43,13 +42,13 @@ const productSchema = mongoose.Schema(
       type: String,
       Required: true,
     },
-    images: [
-      {
-        type: Buffer,
-      },
-    ],
+    inCart: {
+      type: [String],
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Product", productSchema);

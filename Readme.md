@@ -1,42 +1,65 @@
 # Musicart (E-commerce Website)
 
-# Deploy Link: https://musicart.onrender.com
+Welcome to Musicart, an e-commerce platform where music enthusiasts can explore and purchase a wide range of musical products. 
+Feel free to check out our live deployment at [Musicart on Render](https://musicart.onrender.com).
 
-# User Head Api : /api/user
+## User API Endpoints
 
-// Register User
-Method Post : /register
+### Register User
 
-// Login User
-Method Post : /login
+- **Method**: `POST`
+- **Endpoint**: `/api/user/register`
+- **Description**: Allows users to register and create an account.
 
-# Product Head Api : /api/product
+### Login User
 
-// Add Product
-Method Post : /add
+- **Method**: `POST`
+- **Endpoint**: `/api/user/login`
+- **Description**: Allows registered users to log in and access their accounts.
 
-// Get Products
-Method Get : /
+## Product API Endpoints
 
-// Get Product
-Method Get : /:userid
+### Add Product
 
-// Update Product
-Method Patch : /:userid
+- **Method**: `POST`
+- **Endpoint**: `/api/product/add`
+- **Authorization**: Admin
+- **Description**: Allows authorized administrators to add new products to the platform.
 
-// Delete Product
-Method Delete : /:userid
+### Get All Products
 
-# Cart Head Api : /api/cart
+- **Method**: `GET`
+- **Endpoint**: `/api/product/`
+- **Description**: Retrieves a list of all available products in the Musicart catalog.
 
-// Add To Cart
-Method Post : /add/:userId
+### Get Product by ID
 
-// Get Cart Items
-Method Get : /userId
+- **Method**: `GET`
+- **Endpoint**: `/api/product/:productId`
+- **Description**: Retrieves detailed information about a specific product by its unique ID.
 
-// Update Cart item
-Method Patch: /update/:userId/:productId
+### Update Product
 
-// Remove Item from Cart
-Method Delete : /remove/:userId/:productId
+- **Method**: `PATCH`
+- **Endpoint**: `/api/product/update/:userId/:productId`
+- **Description**: Allows administrators to update product information by specifying both the user and product ID.
+
+### Delete Product
+
+- **Method**: `DELETE`
+- **Endpoint**: `/api/product/:userId`
+- **Authorization**: Admin
+- **Description**: Allows authorized administrators to delete products by specifying the user ID.
+
+## Authorization
+
+- For routes requiring authorization, an "Admin" role is necessary.
+- Please include the appropriate authorization token when making requests to these routes.
+
+## How to Use
+
+1. Visit our live deployment at [Musicart on Render](https://musicart.onrender.com).
+2. To interact with the API endpoints, use tools like Postman or any API client.
+3. For authorization-required endpoints, include the admin authorization token in your request headers.
+
+Example Authorization Header:  Authorization: <YOUR_ADMIN_AUTH_TOKEN>

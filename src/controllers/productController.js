@@ -1,11 +1,9 @@
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
-// const multer = require("multer");
-// const upload = multer();
 
 // @desc Create Product
 // @route POST api/product/add
-// @access public route
+// @access PRIVATE route
 const createProduct = async (req, res) => {
   try {
     const {
@@ -43,9 +41,6 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // Convert Uploaded images to Buffers
-    // const imageBuffers = req.files.map((file) => file.buffer);
-
     // create product in database with images
     const product = await Product.create({
       title,
@@ -58,7 +53,6 @@ const createProduct = async (req, res) => {
       color,
       rating,
       description,
-      // images: imageBuffers,
     });
 
     if (product) {
@@ -85,14 +79,14 @@ const getProducts = async (req, res) => {
 };
 
 // @desc Get Product
-// @route Get api/product/:id
+// @route Get api/product/:productId
 // @access public route
 const getProduct = async (req, res) => {
   try {
     const { productId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "ProductId Is Invalid" });
     }
 
     const product = await Product.findById(productId);
@@ -108,51 +102,58 @@ const getProduct = async (req, res) => {
 };
 
 // @desc Update Product
-// @route Patch api/product/:id
-// @access public route
+// @route Patch api/product/:productId
+// @access PUBLIC route
 const updateProduct = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { userId, productId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(userId) ||
+      !mongoose.Types.ObjectId.isValid(productId)
+    ) {
+      return res.status(404).json({ message: "Invalid userId or productId" });
+    }
+
+    let product = await Product.findById(productId);
+
+    if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const updateProduct = await Product.findByIdAndUpdate(productId, req.body, {
-      new: true,
-    });
-
-    if (updateProduct) {
-      res.status(200).json(updateProduct);
+    if (product.inCart.includes(userId)) {
+      product.inCart = product.inCart.filter((id) => id !== userId);
     } else {
-      res.send(404).json({ message: "Product not found" });
+      product.inCart.push(userId);
     }
+
+    await product.save();
+    res.status(200).json({ message: "Product Updated Successfully." });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
 
 // @desc Delete Product
-// @route Delete api/product/:id
-// @access public route
+// @route Delete api/product/:productId
+// @access PRIVATE route
 const deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "ProductId Is Invalid" });
     }
 
     const product = await Product.findById(productId);
 
     if (product) {
       await Product.findByIdAndDelete(productId);
-      return res.status(200).json({
-        message: ` Product with id: ${productId} is deleted Successfully`,
-      });
+      return res
+        .status(200)
+        .json({ message: `ProductId : ${productId} is deleted Successfully` });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
